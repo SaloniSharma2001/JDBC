@@ -1,10 +1,10 @@
 //Singleton class and Factory Method
-
+import.java.sql.connection;
 public class UpdateJDBC {
     public static void main(String[] args) {
         try {
             Connection con = ConnectionProvider.getConnection();
-            String q = "update table1 set tName=? , tCity=? where tId=?;";
+            String q = "update table1 set tName=? , tCity=? where tId=?";
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Enter new name : ");
             String name = br.readLine();
