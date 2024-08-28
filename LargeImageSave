@@ -1,0 +1,24 @@
+//To solve the problem of blob low size we have other types in Mysql such as MEDIUMBLOB and LONGBLOB.
+
+class LargeImageSave {
+	try
+
+    {
+        Class.forname("com.mysql.jdbc.Driver");
+        Connection con = DriverManger.getConnection("jdbc:mysql://localhost:3306/youtube", "root", "rootpwd");
+        String q = "insert into images(pic) values(?)";
+        PreparedStatement pstmt = con.prepareStatement(q);
+        FileInputStream fis = new FileInputStream("FileAbsolutePath");
+        pstmt.setBinaryStream(1, fis, fis.available());
+        pstmt.executeUpdate();
+        System.out.println("Done.....");
+    }catch(
+    Exception e)
+
+    {
+        System.out.println("Error !!");
+    }
+}
+
+public class ConnectionProvider {
+}
