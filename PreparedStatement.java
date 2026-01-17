@@ -17,12 +17,13 @@ class PreparedStatement {
         //set the values to the query
         pstmt.setString(1, "Saloni");
         pstmt.setString(2, "Kolkata");
-        //Since we are don't want any result set hence we shall use executeUpdate instead of execute itself
+        //Since we don't want any result set, we shall use executeUpdate instead of execute itself
         pstmt.executeUpdate();
-        //We cannot give q as a parameter to the execute statement here as it will compile the q again but in an incomplete way without the value being set.
+        //We cannot give q as a parameter to the execute statement here, as it will compile the q again, but in an incomplete way, without the value being set.
         System.out.println("Inserted");
         con.close();
     }catch(Exception e){
         e.printStackTrace();
     }
 }
+
