@@ -326,13 +326,22 @@ while(rs.next()) {
 <hr/>
 
 <h2>6. Transaction Management</h2>
+<p>A transaction is a sequence of operations that must succeed or fail as a unit.</p>
 
 <h3>Auto-commit</h3>
+<p>By default, JDBC commits every statement automatically.</p>
 <pre><code>con.setAutoCommit(false);</code></pre>
 
 <h3>Commit and Rollback</h3>
 <pre><code>con.commit();
 con.rollback();</code></pre>
+
+<h3>Manual Transaction Management</h3>
+<ul>
+  <li>Disable auto-commit</li>
+  <li>Commit on success</li>
+  <li>Rollback on failure</li>
+</ul>
 
 <h3>Savepoints</h3>
 <pre><code>Savepoint sp = con.setSavepoint();</code></pre>
@@ -421,6 +430,55 @@ con.rollback();</code></pre>
 
 <hr/>
 
+<h2>12. Batch Updates and Transaction Management</h2>
+
+<h3>What are Batch Updates?</h3>
+<p>Batch updates allow multiple SQL statements to be sent to the database in one go.</p>
+
+<h3>Why Combine with Transactions?</h3>
+<ul>
+  <li>Performance improvement</li>
+  <li>Data consistency</li>
+</ul>
+
+<hr/>
+
+
+<h2>13. RowSet Interface and Implementations</h2>
+
+<h3>What is RowSet?</h3>
+<p>RowSet is a wrapper around ResultSet with more features.</p>
+
+<h3>JdbcRowSet</h3>
+<p>Connected RowSet, similar to ResultSet.</p>
+
+<h3>CachedRowSet</h3>
+<p>Disconnected RowSet, works without DB connection.</p>
+
+<h3>WebRowSet</h3>
+<p>Supports XML format for data exchange.</p>
+
+<h3>FilteredRowSet</h3>
+<p>Allows filtering rows using conditions.</p>
+
+<h3>JoinRowSet</h3>
+<p>Allows joining multiple RowSets without DB join.</p>
+
+<hr/>
+
+<h2>14. Retrieving Auto-generated Keys</h2>
+
+<h3>What Are Auto-generated Keys?</h3>
+<p>Primary keys generated automatically by the database (AUTO_INCREMENT / SERIAL).</p>
+
+<h3>Why Needed?</h3>
+<ul>
+  <li>To reference inserted records</li>
+  <li>Parent-child relationships</li>
+</ul>
+
+<hr/>
+
 <h2>Connection Pooling</h2>
 
 <h3>What is Connection Pooling?</h3>
@@ -437,7 +495,7 @@ con.rollback();</code></pre>
 <ul>
   <li>Application requests a connection</li>
   <li>Pool provides an existing idle connection</li>
-  <li>After use, connection is returned to pool</li>
+  <li>After use, the connection is returned to the pool</li>
   <li>Connection is NOT closed physically</li>
 </ul>
 
