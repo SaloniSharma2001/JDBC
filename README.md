@@ -273,6 +273,7 @@ while(rs.next()) {
 </ul>
 
 <h3>ResultSetMetaData</h3>
+
 <h4>What is ResultSetMetaData?</h4>
 <p>ResultSetMetaData provides information about the structure of data returned by a query.</p>
 
@@ -290,6 +291,37 @@ while(rs.next()) {
   <li>Excel/CSV exports</li>
 </ul>
 <pre><code>ResultSetMetaData meta = rs.getMetaData();</code></pre>
+
+<h4>Updating Data Using ResultSet (updateRow)</h4>
+
+<h4>What Does updateRow() Do?</h4>
+<p>Allows updating database records directly using ResultSet without writing UPDATE SQL.</p>
+
+<h4>Requirements</h4>
+<ul>
+  <li>ResultSet must be updatable</li>
+  <li>Created using proper flags</li>
+</ul>
+
+<h4>When to Use?</h4>
+<ul>
+  <li>GUI-based applications</li>
+  <li>Row-level manipulation</li>
+</ul>
+
+<h4>Scrollable and Updatable ResultSets</h4>
+
+<h4>Scrollable ResultSet</4>
+<p>Allows moving the cursor forward and backward.</p>
+
+<h4>Updatable ResultSet</h4>
+<p>Allows updating data directly via ResultSet.</p>
+
+<h4>Why They Exist?</h4>
+<ul>
+  <li>Flexibility in data navigation</li>
+  <li>Desktop applications</li>
+</ul>
 
 <hr/>
 
