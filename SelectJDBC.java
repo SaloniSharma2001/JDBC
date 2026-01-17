@@ -5,8 +5,8 @@ public class SelectJDBC {
         try {
             Connection con = ConnectionProvider.getConnection();
             String query = "SELECT * FROM table1";
-            Statement pstmt = con.createStatement(q);
-            ResultSet set = stmt.executeQuery(query);
+            Statement pstmt = con.createStatement(query);
+            ResultSet set = pstmt.executeQuery(query);
             //ResultSet saves data in row and column where it's pointer points to first row by default.
             while(set.next()){
                 //here set.next() returns true or false so, if set contains more rows then it return true else it returns false
@@ -38,4 +38,5 @@ public class ConnectionProvider {
         }
         return con;
     }
+
 }
