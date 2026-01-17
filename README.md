@@ -139,7 +139,7 @@ ps.executeUpdate();</code></pre>
     pstmt.setInt(3, 30);
     int rowsInserted = pstmt.executeUpdate();
 
-<h3>CallableStatement</h3>
+<h3>CallableStatement -- IN, OUT, INOUT Parameters</h3>
 <p>Used to execute stored procedures. Can handle IN, OUT, and INOUT parameters.
 Suitable for complex operations encapsulated in stored procedures.</p>
 <pre><code>CallableStatement cs = con.prepareCall("{call add_emp(?, ?)}");
@@ -152,6 +152,86 @@ cs.execute();</code></pre>
     cstmt.setString(2, "John Doe");
     cstmt.setInt(3, 30);
     cstmt.execute();
+
+<h3>IN Parameters</h3>
+<p>Used to pass input values to stored procedures. Value is sent from Java → Database. The database can read it. The database cannot modify it and send it back</p>
+<h4>Stored Procedure (DB Side)</h4>
+
+      CREATE PROCEDURE get_employee_by_id(
+          IN emp_id INT
+      )
+      BEGIN
+          SELECT * FROM employee WHERE id = emp_id;
+      END;
+
+<h4>Java Coden(Callable Statement)</h4>
+
+    CallableStatement cs =
+            con.prepareCall("{call get_employee_by_id(?)}");
+    
+    cs.setInt(1, 101);   // IN parameter
+    ResultSet rs = cs.executeQuery();
+    //Java sends 101 → DB uses it → Java does not receive any modified value
+
+
+<h3>OUT Parameters</h3>
+<p>Used to receive values from stored procedures. Java does NOT send a value. Database calculates a value. Database returns it back to Java</p>
+
+<h4>Stored Procedure (DB Side)</h4>
+
+    CREATE PROCEDURE get_employee_count(
+        OUT total_count INT
+    )
+    BEGIN
+        SELECT COUNT(*) INTO total_count FROM employee;
+    END;
+
+<h4>Java Coden(Callable Statement)</h4>
+
+    CallableStatement cs =
+            con.prepareCall("{call get_employee_count(?)}");
+    
+    cs.registerOutParameter(1, Types.INTEGER); // OUT parameter
+    cs.execute();
+    
+    int count = cs.getInt(1);
+    System.out.println("Total employees: " + count);
+    //DB decides the value → Java receives it
+
+
+<h3>INOUT Parameters</h3>
+<p>Used to pass a value and receive a modified value. Java sends a value. The database modifies the same value. Modified value is returned to Java</p>
+
+<h4>Stored Procedure (DB Side)</h4>
+
+    CREATE PROCEDURE increment_salary(
+        INOUT salary INT
+    )
+    BEGIN
+        SET salary = salary + 5000;
+    END;
+
+<h4>Java Coden(Callable Statement)</h4>
+
+    CallableStatement cs =
+            con.prepareCall("{call increment_salary(?)}");
+    
+    cs.setInt(1, 40000);                       // IN
+    cs.registerOutParameter(1, Types.INTEGER); // OUT
+    
+    cs.execute();
+    
+    int updatedSalary = cs.getInt(1);
+    System.out.println("Updated Salary: " + updatedSalary);
+    //Java sends 40000 → DB changes it → Java gets 45000
+
+<h3>Why Stored Procedures?</h3>
+<ul>
+  <li>Business logic at DB level</li>
+  <li>Better performance</li>
+  <li>Security (controlled access)</li>
+</ul>
+
 
 <h3>Batch Processing: Allows grouping multiple SQL commands into a batch and executing them at once.
 This can be done using Statement or PreparedStatement.
@@ -193,6 +273,22 @@ while(rs.next()) {
 </ul>
 
 <h3>ResultSetMetaData</h3>
+<h4>What is ResultSetMetaData?</h4>
+<p>ResultSetMetaData provides information about the structure of data returned by a query.</p>
+
+<h4>What Information Can It Provide?</h4>
+<ul>
+  <li>Number of columns</li>
+  <li>Column names</li>
+  <li>Column data types</li>
+</ul>
+
+<h4>Why is it Useful?</h4>
+<ul>
+  <li>Dynamic reports</li>
+  <li>Generic frameworks</li>
+  <li>Excel/CSV exports</li>
+</ul>
 <pre><code>ResultSetMetaData meta = rs.getMetaData();</code></pre>
 
 <hr/>
@@ -289,6 +385,97 @@ con.rollback();</code></pre>
   <li>Console-based JDBC applications</li>
   <li>Web-based JDBC applications</li>
   <li>Integration with Spring MVC</li>
+</ul>
+
+<hr/>
+
+<h2>Connection Pooling</h2>
+
+<h3>What is Connection Pooling?</h3>
+<p>Connection pooling is a technique where a set of database connections is created once and reused multiple times instead of creating a new connection for every request.</p>
+
+<h3>Why Connection Pooling is Needed?</h3>
+<ul>
+  <li>Creating a DB connection is expensive (network + authentication)</li>
+  <li>High-traffic applications may create thousands of connections</li>
+  <li>Too many connections can crash the database</li>
+</ul>
+
+<h3>How Connection Pooling Works</h3>
+<ul>
+  <li>Application requests a connection</li>
+  <li>Pool provides an existing idle connection</li>
+  <li>After use, connection is returned to pool</li>
+  <li>Connection is NOT closed physically</li>
+</ul>
+
+<h3>Common Pool Configurations</h3>
+<ul>
+  <li>Max pool size</li>
+  <li>Idle timeout</li>
+  <li>Connection timeout</li>
+</ul>
+
+<hr/>
+
+<h2> SQLException and SQLWarning</h2>
+
+<h3>SQLException</h3>
+<p>Represents database access errors.</p>
+
+<h3>Error Code</h3>
+<p>Database-specific error number.</p>
+
+<h3>SQLState</h3>
+<p>Standardized 5-character code representing error category.</p>
+
+<h3>SQLWarning</h3>
+<p>Non-fatal warnings that do not stop execution.</p>
+
+<hr/>
+
+<h2> Connection Pooling with DataSource</h2>
+
+<h3>What is DataSource?</h3>
+<p>DataSource is an interface that provides connections using pooling and configuration.</p>
+
+<h3>Why DataSource over DriverManager?</h3>
+<ul>
+  <li>Better performance</li>
+  <li>External configuration</li>
+  <li>Enterprise-ready</li>
+</ul>
+
+<hr/>
+
+<h2>Performance Tuning in JDBC</h2>
+
+<ul>
+  <li>Use PreparedStatement</li>
+  <li>Use connection pooling</li>
+  <li>Use batch processing</li>
+  <li>Fetch only required columns</li>
+</ul>
+
+<hr/>
+
+<h2>Handling Connection Leaks</h2>
+
+<h3>What is a Connection Leak?</h3>
+<p>A connection leak occurs when a connection is not closed or returned to the pool.</p>
+
+<h3>Impact</h3>
+<ul>
+  <li>Pool exhaustion</li>
+  <li>Application slowdown</li>
+  <li>Database outage</li>
+</ul>
+
+<h3>Prevention</h3>
+<ul>
+  <li>Use try-with-resources</li>
+  <li>Use pool leak detection</li>
+  <li>Always close resources</li>
 </ul>
 
 <hr/>
